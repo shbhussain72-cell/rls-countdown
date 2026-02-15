@@ -195,18 +195,28 @@ setInterval(update,1000);
 update();
 
 
-// ===== LONG PRESS VAULT =====
+// ===== LONG PRESS VAULT (Mobile + Desktop) =====
 let pressTimer;
 
+function showVault(){
+  const vault = document.getElementById("vault");
+  vault.style.opacity = 1;
+  vault.style.transform = "translateY(0)";
+}
+
 document.body.addEventListener("mousedown",()=>{
-  pressTimer = setTimeout(()=>{
-    const vault = document.getElementById("vault");
-    vault.style.opacity = 1;
-    vault.style.transform = "translateY(0)";
-  },1000);
+  pressTimer = setTimeout(showVault,1000);
 });
 
 document.body.addEventListener("mouseup",()=>{
+  clearTimeout(pressTimer);
+});
+
+document.body.addEventListener("touchstart",()=>{
+  pressTimer = setTimeout(showVault,1000);
+});
+
+document.body.addEventListener("touchend",()=>{
   clearTimeout(pressTimer);
 });
 
