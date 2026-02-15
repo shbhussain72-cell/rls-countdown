@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,89 +8,79 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  background: radial-gradient(circle at top, #0d0d0d, #000000);
-  color: white;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+  background:radial-gradient(circle at top,#0d0d0d,#000);
+  color:white;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
+canvas{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:0;
 }
 
-.container {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 40px;
-  backdrop-filter: blur(20px);
+.container{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  padding:40px;
 }
 
-h1 {
-  font-weight: 300;
-  letter-spacing: 4px;
-  cursor: pointer;
-  margin-bottom: 20px;
+h1{
+  font-weight:300;
+  letter-spacing:4px;
 }
 
-#counter {
-  font-size: 2.2rem;
-  font-weight: 600;
-  margin: 20px 0;
-  text-shadow: 0 0 15px rgba(255,255,255,0.6);
-  animation: glow 2s infinite alternate;
+#counter{
+  font-size:2.2rem;
+  margin:20px 0;
+  text-shadow:0 0 20px rgba(255,255,255,0.8);
 }
 
-@keyframes glow {
-  from { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-  to { text-shadow: 0 0 25px rgba(255,255,255,0.9); }
+.progress-container{
+  width:80%;
+  margin:20px auto;
+  height:6px;
+  background:rgba(255,255,255,0.2);
+  border-radius:10px;
 }
 
-.progress-container {
-  width: 80%;
-  margin: 25px auto;
-  height: 6px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:white;
+  border-radius:10px;
 }
 
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: white;
-  border-radius: 10px;
-  transition: width 1s ease;
+.subtitle{
+  opacity:0.6;
+  font-size:0.9rem;
+  margin-top:10px;
 }
 
-.subtitle {
-  margin-top: 20px;
-  font-size: 0.9rem;
-  opacity: 0.6;
-}
-
-#secret {
-  display: none;
-  margin-top: 20px;
-  font-size: 1rem;
-  opacity: 0.8;
+#vault{
+  display:none;
+  margin-top:25px;
+  font-size:1rem;
+  color:#f5f3ce;
+  opacity:0.9;
 }
 </style>
 </head>
 <body>
 
-<canvas id="moonCanvas"></canvas>
+<canvas id="sky"></canvas>
 
 <div class="container">
-  <h1 id="title">🌙 RLS Since</h1>
+  <h1>🌙 RLS Since</h1>
   <div id="counter"></div>
 
   <div class="progress-container">
@@ -98,91 +88,86 @@ h1 {
   </div>
 
   <div class="subtitle">Time is proof.</div>
-  <div id="secret">You unlocked the hidden layer.</div>
+
+  <div id="vault">
+    💛 4 February 2025 — The night we became jaan.
+  </div>
 </div>
 
 <script>
 
-// ================= COUNTER =================
+// ===== DATE =====
 const startDate = new Date("February 4, 2025 01:26:00").getTime();
-const twoYears = 1000 * 60 * 60 * 24 * 365 * 2;
+const twoYears = 1000*60*60*24*365*2;
 
-function updateCounter() {
-  const now = new Date().getTime();
-  const diff = now - startDate;
+function update(){
+  const now=new Date().getTime();
+  const diff=now-startDate;
 
-  const seconds = Math.floor(diff / 1000) % 60;
-  const minutes = Math.floor(diff / (1000 * 60)) % 60;
-  const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
-  const daysTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const seconds=Math.floor(diff/1000)%60;
+  const minutes=Math.floor(diff/(1000*60))%60;
+  const hours=Math.floor(diff/(1000*60*60))%24;
+  const days=Math.floor(diff/(1000*60*60*24));
 
-  const years = Math.floor(daysTotal / 365);
-  const months = Math.floor((daysTotal % 365) / 30);
-  const days = (daysTotal % 365) % 30;
+  document.getElementById("counter").innerHTML=
+    `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-  document.getElementById("counter").innerHTML =
-    `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-  const progressPercent = Math.min((diff / twoYears) * 100, 100);
-  document.getElementById("progress").style.width = progressPercent + "%";
+  document.getElementById("progress").style.width=
+    Math.min((diff/twoYears)*100,100)+"%";
 }
 
-setInterval(updateCounter, 1000);
-updateCounter();
+setInterval(update,1000);
+update();
 
 
-// ================= SECRET TAP =================
-let taps = 0;
-document.getElementById("title").addEventListener("click", () => {
-  taps++;
-  if (taps >= 5) {
-    document.getElementById("secret").style.display = "block";
-  }
+// ===== LONG PRESS VAULT =====
+let pressTimer;
+document.body.addEventListener("mousedown",()=>{
+  pressTimer=setTimeout(()=>{
+    document.getElementById("vault").style.display="block";
+  },1000);
+});
+document.body.addEventListener("mouseup",()=>{
+  clearTimeout(pressTimer);
 });
 
 
-// ================= MOON ANIMATION =================
-const canvas = document.getElementById("moonCanvas");
-const ctx = canvas.getContext("2d");
+// ===== MOON + REFLECTION =====
+const canvas=document.getElementById("sky");
+const ctx=canvas.getContext("2d");
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+resize();
+window.addEventListener("resize",resize);
 
-let moonX = -100;
-let moonY = canvas.height * 0.25;
+let moonX=-100;
+let moonY=canvas.height*0.25;
 
-function drawMoon() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Moon glow
-  const glow = ctx.createRadialGradient(moonX, moonY, 20, moonX, moonY, 100);
-  glow.addColorStop(0, "rgba(255,255,255,0.9)");
-  glow.addColorStop(1, "rgba(255,255,255,0)");
-
-  ctx.fillStyle = glow;
+  // Moon
+  ctx.fillStyle="#f5f3ce";
   ctx.beginPath();
-  ctx.arc(moonX, moonY, 100, 0, Math.PI * 2);
+  ctx.arc(moonX,moonY,45,0,Math.PI*2);
   ctx.fill();
 
-  // Moon body
-  ctx.fillStyle = "#f5f3ce";
+  // Reflection
+  ctx.globalAlpha=0.2;
   ctx.beginPath();
-  ctx.arc(moonX, moonY, 45, 0, Math.PI * 2);
+  ctx.arc(moonX,moonY+200,45,0,Math.PI*2);
   ctx.fill();
+  ctx.globalAlpha=1;
 
-  moonX += 0.2;
-  if (moonX > canvas.width + 100) {
-    moonX = -100;
-  }
+  moonX+=0.2;
+  if(moonX>canvas.width+100) moonX=-100;
 
-  requestAnimationFrame(drawMoon);
+  requestAnimationFrame(draw);
 }
-
-drawMoon();
+draw();
 
 </script>
 
