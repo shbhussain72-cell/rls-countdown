@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RLS Since</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #111 0%, #000 100%);
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+}
+
+.container {
+  padding: 40px;
+}
+
+h1 {
+  font-size: 2.8rem;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+#counter {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(255,255,255,0.5);
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+  to { text-shadow: 0 0 25px rgba(255,255,255,0.9); }
+}
+
+.small {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⏳ RLS Since</h1>
+  <div id="counter"></div>
+  <div class="small">4 February 2025 • 1:26 AM</div>
+</div>
+
+<script>
+const startDate = new Date("February 4, 2025 01:26:00").getTime();
+
+function updateCounter() {
+  const now = new Date().getTime();
+  const diff = now - startDate;
+
+  const seconds = Math.floor(diff / 1000) % 60;
+  const minutes = Math.floor(diff / (1000 * 60)) % 60;
+  const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+  const daysTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  const years = Math.floor(daysTotal / 365);
+  const months = Math.floor((daysTotal % 365) / 30);
+  const days = (daysTotal % 365) % 30;
+
+  document.getElementById("counter").innerHTML =
+    `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+
+setInterval(updateCounter, 1000);
+updateCounter();
+</script>
+
+</body>
+</html>
