@@ -4,173 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RLS Since</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet">
+
 <style>
 body{
-  margin:0;
-  overflow:hidden;
-  font-family:'Montserrat',sans-serif;
-  background:#000;
-  color:white;
+  margin:0;
+  overflow:hidden;
+  font-family:'Montserrat',sans-serif;
+  background:#000;
+  color:white;
 }
+
 canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:0;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:0;
 }
+
 .container{
-  position:relative;
-  z-index:2;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  position:relative;
+  z-index:2;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
+
 .card{
-  background:rgba(15,15,25,0.6);
-  border:1px solid rgba(255,255,255,0.12);
-  backdrop-filter:blur(20px);
-  padding:45px 65px;
-  border-radius:28px;
-  text-align:center;
+  background:rgba(20,20,30,0.6);
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(25px);
+  padding:50px 70px;
+  border-radius:30px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(255,255,255,0.05);
 }
+
 h1{
-  font-weight:300;
-  letter-spacing:5px;
-  margin-bottom:25px;
+  font-weight:300;
+  letter-spacing:5px;
+  margin-bottom:25px;
 }
+
 #counter{
-  font-size:2.4rem;
-  font-weight:600;
-  margin-bottom:15px;
+  font-size:2.4rem;
+  font-weight:600;
+  margin-bottom:15px;
 }
+
 .subtitle{
-  font-size:0.9rem;
-  opacity:0.5;
+  font-size:0.9rem;
+  opacity:0.5;
 }
+
 #vault{
-  margin-top:22px;
+  margin-top:25px;
   opacity:0;
   transition:opacity 0.6s ease, transform 0.6s ease;
-  color:#f5f3ce;
-  font-weight:500;
-  text-shadow:0 0 10px rgba(255,255,220,0.6);
   transform:translateY(10px);
+  color:#f5f3ce;
+  text-shadow:0 0 12px rgba(255,255,220,0.5);
 }
 </style>
 </head>
 <body>
+
 <canvas id="space"></canvas>
+
 <div class="container">
-  <div class="card">
-    <h1>🌙 RLS Since</h1>
-    <div id="counter"></div>
-    <div class="subtitle">Time is proof.</div>
-    <div id="vault">💛 4 February 2025 — Since the night we became jaan.</div>
-  </div>
+  <div class="card">
+    <h1>🌙 RLS Since</h1>
+    <div id="counter"></div>
+    <div class="subtitle">Time is proof.</div>
+    <div id="vault">💛 The night we became jaan — still counting.</div>
+  </div>
 </div>
+
 <script>
+
 // ===== CANVAS SETUP =====
-const canvas=document.getElementById("space");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+
 function resize(){
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 resize();
-window.addEventListener("resize",resize);
-// ===== STAR SYSTEM (DEPTH + TWINKLE) =====
-let stars=[];
+window.addEventListener("resize", resize);
+
+// ===== STAR SYSTEM =====
+let stars = [];
 for(let i=0;i<400;i++){
-  stars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*1.2,
-    speed:Math.random()*0.15,
-    alpha:Math.random(),
-    twinkle:Math.random()*0.02
-  });
+  stars.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.3,
+    speed: Math.random()*0.15,
+    alpha: Math.random(),
+    twinkle: Math.random()*0.02
+  });
 }
+
 // ===== MOON =====
-let moonX=canvas.width/2;
-let moonY=canvas.height*0.18;
-let direction=0.1;
+let moonX = canvas.width/2;
+let moonY = canvas.height*0.18;
+let direction = 0.08;
+
 function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  // Draw stars
-  stars.forEach(s=>{
-    ctx.globalAlpha=s.alpha;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-    s.y+=s.speed;
-    if(s.y>canvas.height){
-      s.y=0;
-      s.x=Math.random()*canvas.width;
-    }
-    s.alpha+=s.twinkle;
-    if(s.alpha>=1||s.alpha<=0.2){
-      s.twinkle*=-1;
-    }
-  });
-  ctx.globalAlpha=1;
-  // Moon soft glow
-  const glow=ctx.createRadialGradient(moonX,moonY,40,moonX,moonY,140);
-  glow.addColorStop(0,"rgba(255,255,220,0.6)");
-  glow.addColorStop(1,"rgba(255,255,220,0)");
-  ctx.fillStyle=glow;
-  ctx.beginPath();
-  ctx.arc(moonX,moonY,140,0,Math.PI*2);
-  ctx.fill();
-  // Moon body
-  ctx.fillStyle="#f5f3ce";
-  ctx.beginPath();
-  ctx.arc(moonX,moonY,50,0,Math.PI*2);
-  ctx.fill();
-  // Gentle horizontal drift
-  moonX+=direction;
-  if(moonX>canvas.width-100||moonX<100){
-    direction*=-1;
-  }
-  requestAnimationFrame(draw);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Stars
+  stars.forEach(s=>{
+    ctx.globalAlpha = s.alpha;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle="white";
+    ctx.fill();
+
+    s.y += s.speed;
+    if(s.y > canvas.height){
+      s.y = 0;
+      s.x = Math.random()*canvas.width;
+    }
+
+    s.alpha += s.twinkle;
+    if(s.alpha >= 1 || s.alpha <= 0.2){
+      s.twinkle *= -1;
+    }
+  });
+
+  ctx.globalAlpha = 1;
+
+  // Moon glow
+  const glow = ctx.createRadialGradient(moonX, moonY, 40, moonX, moonY, 160);
+  glow.addColorStop(0,"rgba(255,255,220,0.6)");
+  glow.addColorStop(1,"rgba(255,255,220,0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 160, 0, Math.PI*2);
+  ctx.fill();
+
+  // Moon body
+  ctx.fillStyle="#f5f3ce";
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 55, 0, Math.PI*2);
+  ctx.fill();
+
+  // Gentle horizontal drift
+  moonX += direction;
+  if(moonX > canvas.width-120 || moonX < 120){
+    direction *= -1;
+  }
+
+  requestAnimationFrame(draw);
 }
 draw();
+
+
 // ===== COUNTER (YEAR FORMAT) =====
-const startDate=new Date("February 4, 2025 01:26:00");
+const startDate = new Date("February 4, 2025 01:26:00");
+
 function update(){
-  const now=new Date();
-  let years=now.getFullYear()-startDate.getFullYear();
-  let months=now.getMonth()-startDate.getMonth();
-  let days=now.getDate()-startDate.getDate();
-  let hours=now.getHours()-startDate.getHours();
-  let minutes=now.getMinutes()-startDate.getMinutes();
-  let seconds=now.getSeconds()-startDate.getSeconds();
-  if(seconds<0){seconds+=60;minutes--;}
-  if(minutes<0){minutes+=60;hours--;}
-  if(hours<0){hours+=24;days--;}
-  if(days<0){
-    const prevMonth=new Date(now.getFullYear(),now.getMonth(),0);
-    days+=prevMonth.getDate();
-    months--;
-  }
-  if(months<0){months+=12;years--;}
-  document.getElementById("counter").innerHTML=
-    `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  const now = new Date();
+
+  let years = now.getFullYear() - startDate.getFullYear();
+  let months = now.getMonth() - startDate.getMonth();
+  let days = now.getDate() - startDate.getDate();
+  let hours = now.getHours() - startDate.getHours();
+  let minutes = now.getMinutes() - startDate.getMinutes();
+  let seconds = now.getSeconds() - startDate.getSeconds();
+
+  if(seconds < 0){ seconds+=60; minutes--; }
+  if(minutes < 0){ minutes+=60; hours--; }
+  if(hours < 0){ hours+=24; days--; }
+  if(days < 0){
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+    months--;
+  }
+  if(months < 0){ months+=12; years--; }
+
+  document.getElementById("counter").innerHTML =
+    `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
+
 setInterval(update,1000);
 update();
+
+
 // ===== LONG PRESS VAULT =====
 let pressTimer;
+
 document.body.addEventListener("mousedown",()=>{
-  pressTimer=setTimeout(()=>{
-    document.getElementById("vault").style.opacity=1;
-document.getElementById("vault").style.transform="translateY(0)";
+  pressTimer = setTimeout(()=>{
+    const vault = document.getElementById("vault");
+    vault.style.opacity = 1;
+    vault.style.transform = "translateY(0)";
+  },1000);
 });
+
 document.body.addEventListener("mouseup",()=>{
-  clearTimeout(pressTimer);
+  clearTimeout(pressTimer);
 });
+
 </script>
+
 </body>
 </html>
