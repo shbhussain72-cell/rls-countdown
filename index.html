@@ -1,73 +1,228 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RLS Since</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #111 0%, #000 100%);
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
+  font-family: 'Montserrat', sans-serif;
   overflow: hidden;
+  transition: background 0.5s ease;
 }
+
+.day {
+  background: linear-gradient(135deg, #dfe9f3, #ffffff);
+  color: #111;
+}
+
+.night {
+  background: radial-gradient(circle at top, #0f0f0f, #000);
+  color: #fff;
+}
+
 .container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
   padding: 40px;
+  backdrop-filter: blur(20px);
 }
+
 h1 {
-  font-size: 2.8rem;
-  letter-spacing: 3px;
-  margin-bottom: 30px;
-  opacity: 0.8;
+  font-weight: 300;
+  letter-spacing: 4px;
+  cursor: pointer;
 }
+
 #counter {
-  font-size: 2.5rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-shadow: 0 0 15px rgba(255,255,255,0.5);
+  font-size: 2.3rem;
+  margin: 20px 0;
+  text-shadow: 0 0 15px rgba(255,255,255,0.4);
   animation: glow 2s infinite alternate;
 }
+
 @keyframes glow {
   from { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-  to { text-shadow: 0 0 25px rgba(255,255,255,0.9); }
+  to { text-shadow: 0 0 25px rgba(255,255,255,0.8); }
 }
-.small {
+
+.progress-container {
+  width: 80%;
+  margin: 20px auto;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: white;
+  border-radius: 10px;
+  transition: width 1s ease;
+}
+
+.subtitle {
   margin-top: 20px;
   font-size: 0.9rem;
-  opacity: 0.5;
+  opacity: 0.6;
+}
+
+#secret {
+  display: none;
+  margin-top: 20px;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 </style>
 </head>
 <body>
+
+<canvas id="stars"></canvas>
+
 <div class="container">
-  <h1>⏳ RLS Since</h1>
+  <h1 id="title">⏳ RLS Since</h1>
   <div id="counter"></div>
-  <div class="small">4 February 2025 • 1:26 AM</div>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <div class="subtitle">Time is proof.</div>
+  <div id="secret">You found the hidden layer. Respect.</div>
 </div>
+
 <script>
+// Auto theme
+const hour = new Date().getHours();
+document.body.classList.add(hour >= 6 && hour < 18 ? "day" : "night");
+
+// Counter
 const startDate = new Date("February 4, 2025 01:26:00").getTime();
+const twoYears = 1000 * 60 * 60 * 24 * 365 * 2;
+
 function updateCounter() {
   const now = new Date().getTime();
   const diff = now - startDate;
+
   const seconds = Math.floor(diff / 1000) % 60;
   const minutes = Math.floor(diff / (1000 * 60)) % 60;
   const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
   const daysTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+
   const years = Math.floor(daysTotal / 365);
   const months = Math.floor((daysTotal % 365) / 30);
   const days = (daysTotal % 365) % 30;
+
   document.getElementById("counter").innerHTML =
     `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+  const progressPercent = Math.min((diff / twoYears) * 100, 100);
+  document.getElementById("progress").style.width = progressPercent + "%";
 }
+
 setInterval(updateCounter, 1000);
 updateCounter();
+
+// Secret tap
+let taps = 0;
+document.getElementById("title").addEventListener("click", () => {
+  taps++;
+  if (taps >= 5) {
+    document.getElementById("secret").style.display = "block";
+  }
+});
+
+<script>
+// Auto theme
+const hour = new Date().getHours();
+document.body.classList.add(hour >= 6 && hour < 18 ? "day" : "night");
+
+// Counter
+const startDate = new Date("February 4, 2025 01:26:00").getTime();
+const twoYears = 1000 * 60 * 60 * 24 * 365 * 2;
+
+function updateCounter() {
+  const now = new Date().getTime();
+  const diff = now - startDate;
+
+  const seconds = Math.floor(diff / 1000) % 60;
+  const minutes = Math.floor(diff / (1000 * 60)) % 60;
+  const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+  const daysTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  const years = Math.floor(daysTotal / 365);
+  const months = Math.floor((daysTotal % 365) / 30);
+  const days = (daysTotal % 365) % 30;
+
+  document.getElementById("counter").innerHTML =
+    `${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+  const progressPercent = Math.min((diff / twoYears) * 100, 100);
+  document.getElementById("progress").style.width = progressPercent + "%";
+}
+
+setInterval(updateCounter, 1000);
+updateCounter();
+
+// Secret tap
+let taps = 0;
+document.getElementById("title").addEventListener("click", () => {
+  taps++;
+  if (taps >= 5) {
+    document.getElementById("secret").style.display = "block";
+  }
+});
+
+// Moon Background
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let moonX = -100;
+let moonY = canvas.height * 0.3;
+
+function drawMoon() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Moon glow
+  const glow = ctx.createRadialGradient(moonX, moonY, 20, moonX, moonY, 80);
+  glow.addColorStop(0, "rgba(255,255,255,0.9)");
+  glow.addColorStop(1, "rgba(255,255,255,0)");
+
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 80, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Moon body
+  ctx.fillStyle = "#f5f3ce";
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 40, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Move moon slowly
+  moonX += 0.2;
+  if (moonX > canvas.width + 100) {
+    moonX = -100;
+  }
+
+  requestAnimationFrame(drawMoon);
+}
+
+drawMoon();
 </script>
-</body>
-</html>
